@@ -2,7 +2,7 @@ import { BiPlus } from "react-icons/bi";
 
 function CardHeader(props) {
   return (
-    <div className="flex">
+    <div className="flex mb-6">
       <h3 className="text-lg font-medium text-center flex-grow">{props.title}</h3>
       <div>
         <button

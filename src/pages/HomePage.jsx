@@ -1,4 +1,4 @@
-import Dashboard from "../components/UI/Dashboard";
+import Dashboard from "../components/Layouts/Dashboard";
 
 function HomePage() {
   return <Dashboard />;

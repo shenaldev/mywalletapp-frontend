@@ -6,13 +6,15 @@ import FormGroup from "../../components/UI/Forms/FormGroup";
 import Input from "../../components/UI/Forms/Input";
 import Spinner from "../../components/UI/Spinner";
 import InputError from "../UI/Forms/InputError";
+import ErrorList from "../UI/Forms/ErrorList";
 import ModalHeader from "../Common/ModalHeader";
-//IMPORT LIBRIES
+//IMPORT LIBS
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
+import { toast } from "react-toastify";
+//IMPORT UTILS
 import apiClient, { axiosError, webClient } from "../../util/Axios";
-import ErrorList from "../UI/Forms/ErrorList";
 
 function AddPayment(props) {
   const [isSubmiting, setIsSubmiting] = useState(false);
@@ -50,8 +52,20 @@ function AddPayment(props) {
       .post("/payments/add", values)
       .then((response) => {
         if (response.status == 200) {
+          props.onNewPayment();
           setIsSubmiting(false);
           formik.resetForm();
+          modelHideHandler();
+          toast.success("Payment Saved Successfully!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
         }
       })
       .catch((error) => {

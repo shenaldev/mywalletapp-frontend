@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setLogout } from "./Auth";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -41,7 +42,8 @@ export function axiosError(error) {
     return error.response.data.errors;
   }
   if (error.response.status === 401) {
-    return error.response.data;
+    setLogout();
+    window.location.replace("/auth/login/401");
   }
 
   return "Somthings wrong try again later.";

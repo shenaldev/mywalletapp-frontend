@@ -19,18 +19,14 @@ const router = createBrowserRouter([
     path: "/auth",
     element: <AuthRoot />,
     children: [
-      { path: "login", element: <LoginPage /> },
+      { path: "login/:token_expired?", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
     ],
   },
 ]);
 
 function App() {
-  return (
-    <div>
-      <RouterProvider router={router} />
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
