@@ -1,3 +1,5 @@
+import { numberFormat } from "../../util/Util";
+
 function PaymentItems(props) {
   const payments = props.payments;
 
@@ -13,7 +15,7 @@ function PaymentItems(props) {
                   <li key={payment.id} className="flex justify-between border-b border-b-slate-200 border-spacing-1 mb-2">
                     <span>{payment.date}</span>
                     <span>{payment.payment_for}</span>
-                    <span>{payment.amount}</span>
+                    <span>{numberFormat(payment.amount)}</span>
                   </li>
                 );
               })}

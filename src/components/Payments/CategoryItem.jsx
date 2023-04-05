@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
+import { numberFormat } from "../../util/Util";
 
 function CategoryItem(props) {
   const category = props.category;
   const payments = props.items;
-  const total = props.total;
+  const totals = props.totals;
   const [expand, setExpand] = useState(false);
 
   function expandClickHandler() {
@@ -17,16 +18,23 @@ function CategoryItem(props) {
         <p>{category.name}</p>
         <span className="flex gap-2 items-center">
           {/** OUTPUT TOTAL AMOUNT BY CATEGORY */}
-          {total &&
-            Object.values(total).map((total) => {
-              return total != undefined ? total.total : 0;
+          {totals &&
+            totals.map((total) => {
+              return total.category_id == category.id && numberFormat(total.total);
             })}
-          {total && total.length < 1 && "0.00"}
-          {total && total.length > 0 && (
-            <button className="flex gap-2 items-center" onClick={expandClickHandler}>
-              {expand ? <BsCaretUpFill color="red" /> : <BsCaretDownFill color="green" />}
-            </button>
-          )}
+          {/** OUTPUT 0 IF TOTAL NOT EXISTS */}
+          {totals && totals.length <= 0 && "0.00"}
+          {/** OUTPUT EXPAND BUTTON IF ANY TRANACTION EXISTS */}
+          {totals &&
+            totals.map((total) => {
+              return (
+                total.category_id == category.id && (
+                  <button key={Math.random() * 1} className="flex gap-2 items-center" onClick={expandClickHandler}>
+                    {expand ? <BsCaretUpFill color="red" /> : <BsCaretDownFill color="green" />}
+                  </button>
+                )
+              );
+            })}
         </span>
       </div>
       {expand && payments && payments[category.id] && (
@@ -38,7 +46,7 @@ function CategoryItem(props) {
                   <li key={payment.id} className="flex justify-between border-b border-b-slate-200 border-spacing-1 mb-2">
                     <span>{payment.date}</span>
                     <span>{payment.payment_for}</span>
-                    <span>{payment.amount}</span>
+                    <span>{numberFormat(payment.amount)}</span>
                   </li>
                 );
               })}

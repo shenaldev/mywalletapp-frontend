@@ -52,7 +52,7 @@ function AddPayment(props) {
       .post("/payments/add", values)
       .then((response) => {
         if (response.status == 200) {
-          props.onNewPayment();
+          props.onAdd(); // RELOAD DATA WHEN NEW REACORD ADDED
           setIsSubmiting(false);
           formik.resetForm();
           modelHideHandler();

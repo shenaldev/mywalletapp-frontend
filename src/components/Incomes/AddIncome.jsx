@@ -48,6 +48,7 @@ function AddIncome(props) {
       .post("/incomes/add", values)
       .then((response) => {
         if (response.status == 200) {
+          props.onAdd(); // RELOAD DATA WHEN NEW REACORD ADDED
           setIsSubmiting(false);
           formik.resetForm();
           modelHideHandler();
