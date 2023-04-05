@@ -13,9 +13,10 @@ const months = [
   { id: 11, name: "December", short: "Dec" },
 ];
 
-function Sidebar() {
+function Sidebar(props) {
+  const currentMonth = props.month;
   const monthClickHandler = (month) => {
-    console.log(month);
+    props.onMonthChange(month);
   };
 
   return (
@@ -26,7 +27,12 @@ function Sidebar() {
         <ul>
           {months.map((month) => {
             return (
-              <li key={month.id} className="mb-4">
+              <li
+                key={month.id}
+                className={`mb-4 ${
+                  currentMonth == month.id ? "bg-bodyBackground text-slate-900 px-4 font-medium py-1 rounded-l-md" : undefined
+                }`}
+              >
                 <button onClick={monthClickHandler.bind(this, month.id)}>{month.name}</button>
               </li>
             );
