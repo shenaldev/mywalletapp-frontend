@@ -1,4 +1,5 @@
 import { Navigate, Outlet, redirect } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import { isAuth } from "./util/Auth";
 
 function AuthRoot() {
@@ -8,7 +9,12 @@ function AuthRoot() {
     return <Navigate to="/" replace />;
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />;
+      <ToastContainer />
+    </>
+  );
 }
 
 export default AuthRoot;
