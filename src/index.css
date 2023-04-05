@@ -6,3 +6,25 @@ body {
   font-family: "Poppins", sans-serif;
   background: hsl(190, 60%, 97%);
 }
+
+/* Set the scrollbar width and hide the default scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Style the scrollbar track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Style the scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background: #4b56d2;
+  border-radius: 5px;
+}
+
+/* Style the scrollbar on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #0066cc;
+}
