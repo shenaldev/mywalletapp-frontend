@@ -37,20 +37,20 @@ function Header(props) {
   }
 
   return (
-    <header className="flex justify-between mx-8 items-center">
+    <header className="flex justify-end md:justify-between gap-8 md:mx-8 items-center">
       <div>
         <select
           name="year"
           id="year"
           value={selectedYear}
-          className="bg-gray-50 border border-gray-300 text-gray-900 px-4 py-1 rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full"
+          className="bg-gray-50 border border-gray-300 text-gray-900 md:ml-8 lg:ml-0 px-4 py-1 rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full"
           onChange={yearChangeHandler}
         >
           {!props.year && <option className="text-sm">Loading...</option>}
           {props.year && getYearsOptions(props.year, currentYear)}
         </select>
       </div>
-      <h4 className="text-lg text-slate-700 font-medium">This Month Transactions</h4>
+      <h4 className="hidden md:block text-lg text-slate-700 font-medium">This Month Transactions</h4>
       <div className="relative">
         <BiUserCircle size="2rem" color="#4B56D2" className="cursor-pointer" onClick={avatarClickHandler} />
         <div

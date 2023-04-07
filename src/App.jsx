@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
+// Import Styles
+import "./assets/css/styles.css";
 // Import Pages
 import Root from "./Root";
 import AuthRoot from "./AuthRoot";

@@ -1,0 +1,64 @@
+$primary-color: #4b56d2;
+
+/**
+* SIDEBAR SYLES
+***/
+.sidebar {
+  min-width: 11rem;
+  min-height: 100vh;
+  padding-left: 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  @media (min-width: 768px) {
+    min-width: 12rem;
+    max-width: 12rem;
+  }
+  @media (min-width: 1024px) {
+    position: relative;
+    min-width: 14rem;
+    padding-left: 3rem;
+  }
+  .sidebar-close {
+    position: absolute;
+    right: -1.8rem;
+    top: 2rem;
+    background: $primary-color;
+    width: 2.3rem;
+    height: 2rem;
+    border-radius: 0 50% 50% 0;
+    z-index: 50;
+  }
+}
+
+/**
+* HAMBURGER MENU STYLES WITH CLOSE ANIMATION
+***/
+.hamburger-icon {
+  cursor: pointer;
+  span {
+    display: block;
+    width: 1.6rem;
+    height: 3px;
+    border-radius: 20px;
+    background: $primary-color;
+    margin-bottom: 6px;
+    transition: 300ms ease-in-out;
+  }
+  &.active {
+    span:nth-child(1) {
+      transform: rotate(45deg);
+      background: #ff3b3b;
+      top: 0;
+    }
+    span:nth-child(2) {
+      display: none;
+    }
+    span:nth-child(3) {
+      transform: rotate(-45deg);
+      background: #ff3b3b;
+      margin-top: -10px;
+    }
+  }
+}

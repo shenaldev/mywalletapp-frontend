@@ -1,3 +1,8 @@
+import { useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
+
+import HamburgerButton from "../UI/HamburgerButton";
+
 const months = [
   { id: 0, name: "January", short: "Jan" },
   { id: 1, name: "February", short: "Feb" },
@@ -14,32 +19,48 @@ const months = [
 ];
 
 function Sidebar(props) {
+  const [navShown, setNavShown] = useState(false);
   const currentMonth = props.month;
   const monthClickHandler = (month) => {
     props.onMonthChange(month);
   };
 
+  function sidebarShowHandler() {
+    setNavShown((value) => (value = !value));
+  }
+
   return (
-    <div className="pl-8 py-8 max-w-[14rem] min-w-[14rem] min-h-screen bg-primaryColor text-white">
-      <h2 className="text-2xl font-semibold mb-6">My Wallet</h2>
-      <span className="block bg-slate-100 w-full h-[1px]"></span>
-      <nav className="mt-8">
-        <ul>
-          {months.map((month) => {
-            return (
-              <li
-                key={month.id}
-                className={`mb-4 ${
-                  currentMonth == month.id ? "bg-bodyBackground text-slate-900 px-4 font-medium py-1 rounded-l-md" : undefined
-                }`}
-              >
-                <button onClick={monthClickHandler.bind(this, month.id)}>{month.name}</button>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </div>
+    <>
+      {/***** HAMBURGER BUTTON FOR MOBILE VIEWS *****/}
+      <div className="absolute top-10 left-6">
+        <HamburgerButton onClick={sidebarShowHandler} />
+      </div>
+      <div className={`sidebar md:py-8 bg-primaryColor text-white lg:block ${navShown ? "block" : "hidden"}`}>
+        {/***** CLOSE BUTTON FOR MOBILE VIEWS *****/}
+        <button onClick={sidebarShowHandler} className="sidebar-close flex items-center justify-center lg:hidden">
+          <AiOutlineClose color="white" size="1.3rem" />
+        </button>
+        {/***** NAVIGATION MENUE *****/}
+        <h2 className="mt-8 md:mt-0 text-2xl font-semibold mb-6">My Wallet</h2>
+        <span className="block bg-slate-100 w-full h-[1px]"></span>
+        <nav className="mt-8">
+          <ul>
+            {months.map((month) => {
+              return (
+                <li
+                  key={month.id}
+                  className={`mb-4 ${
+                    currentMonth == month.id ? "bg-bodyBackground text-slate-900 px-4 font-medium py-1 rounded-l-md" : undefined
+                  }`}
+                >
+                  <button onClick={monthClickHandler.bind(this, month.id)}>{month.name}</button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </div>
+    </>
   );
 }
 

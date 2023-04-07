@@ -8,7 +8,7 @@ function Dashboard() {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 mt-12">
+      <div className="grid md:grid-cols-2 gap-4 mt-12">
         <Payments year={currentYear} month={currentMonth} />
         <Incomes year={currentYear} month={currentMonth} />
       </div>
