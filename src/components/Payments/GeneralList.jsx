@@ -1,7 +1,8 @@
 import { formatMonthDay } from "../../util/Dates";
 import { numberFormat } from "../../util/Util";
+import ListItem from "./ListItem";
 
-function PaymentItems(props) {
+function GeneralList(props) {
   const payments = props.payments;
 
   return (
@@ -12,13 +13,7 @@ function PaymentItems(props) {
           <ul className="text-sm font-medium">
             {payments &&
               payments.map((payment) => {
-                return (
-                  <li key={payment.id} className="flex justify-between border-b border-b-slate-200 border-spacing-1 mb-2">
-                    <span>{formatMonthDay(payment.date)}</span>
-                    <span>{payment.payment_for}</span>
-                    <span>{numberFormat(payment.amount)}</span>
-                  </li>
-                );
+                return <ListItem payment={payment} />;
               })}
           </ul>
         </div>
@@ -27,4 +22,4 @@ function PaymentItems(props) {
   );
 }
 
-export default PaymentItems;
+export default GeneralList;

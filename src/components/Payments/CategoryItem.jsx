@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
-import { formatMonthDay } from "../../util/Dates";
+//IMPORT UTILLS
 import { numberFormat } from "../../util/Util";
+//IMPORT COMPONENTS
+import ListItem from "./ListItem";
 
 function CategoryItem(props) {
   const category = props.category;
@@ -43,13 +45,7 @@ function CategoryItem(props) {
           <ul className="text-sm font-medium">
             {payments[category.id] &&
               payments[category.id].map((payment) => {
-                return (
-                  <li key={payment.id} className="flex justify-between border-b border-b-slate-200 border-spacing-1 mb-2">
-                    <span>{formatMonthDay(payment.date)}</span>
-                    <span>{payment.payment_for}</span>
-                    <span>{numberFormat(payment.amount)}</span>
-                  </li>
-                );
+                return <ListItem payment={payment} />;
               })}
           </ul>
         </div>

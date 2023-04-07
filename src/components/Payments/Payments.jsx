@@ -6,7 +6,7 @@ import AddPayment from "./AddPayment";
 //IMPORT UTILS
 import apiClient, { webClient } from "../../util/Axios";
 import CategoryItem from "./CategoryItem";
-import PaymentItems from "./PaymentItems";
+import GeneralList from "./GeneralList";
 import Spinner from "../UI/Spinner";
 import SumOfTotal from "../Common/SumOfTotal";
 
@@ -89,7 +89,7 @@ function Payments(props) {
             );
           })}
         {/*** OUTPUT ALL GENERAL PAYMENTS*/}
-        {!isFetching && generalPayments && <PaymentItems payments={generalPayments} />}
+        {!isFetching && generalPayments && <GeneralList payments={generalPayments} />}
         {/** OUTPUT SUM OF TOTAL */}
         {!isFetching && <SumOfTotal sum={sum} className="text-red-600 border-b-slate-600" />}
       </Card>
