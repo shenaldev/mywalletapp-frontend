@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import Card from "../UI/Card";
 import CardHeader from "../UI/CardHeader";
 import AddPayment from "./AddPayment";
-//IMPORT UTILS
-import apiClient, { webClient } from "../../util/Axios";
 import CategoryItem from "./CategoryItem";
 import GeneralList from "./GeneralList";
 import Spinner from "../UI/Spinner";
 import SumOfTotal from "../Common/SumOfTotal";
+//IMPORT UTILS
+import apiClient, { webClient } from "../../util/Axios";
 
 function Payments(props) {
   const currentYear = props.year;
