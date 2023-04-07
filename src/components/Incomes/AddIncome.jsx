@@ -74,7 +74,7 @@ function AddIncome(props) {
 
   return (
     <Modal>
-      <Card className="min-w-[28rem] max-w-md">
+      <Card className="max-w-xs max-h-[90vh] md:min-w-[28rem] md:max-w-md overflow-y-auto">
         <ModalHeader title="Add New Income" closeButtonClick={modelHideHandler} />
         {/**IF HAS ANY ERROR IN BACKEND VALIDATION **/}
         {validationErrors && <ErrorList errors={validationErrors} />}
