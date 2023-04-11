@@ -3,7 +3,7 @@ import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 //IMPORT UTILLS
 import { numberFormat } from "../../util/Util";
 //IMPORT COMPONENTS
-import ListItem from "./ListItem";
+import PaymentItem from "./PaymentItem";
 
 function CategoryItem(props) {
   const category = props.category;
@@ -45,7 +45,7 @@ function CategoryItem(props) {
           <ul className="text-sm font-medium">
             {payments[category.id] &&
               payments[category.id].map((payment) => {
-                return <ListItem payment={payment} />;
+                return <PaymentItem key={payment.id} payment={payment} onDelete={props.onDelete} />;
               })}
           </ul>
         </div>

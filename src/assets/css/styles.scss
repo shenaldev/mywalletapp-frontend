@@ -62,3 +62,17 @@ $primary-color: #4b56d2;
     }
   }
 }
+
+/**
+* EDIT DELETE BUTTON STYLES AND EVENT
+***/
+.transaction-list {
+  &:hover {
+    .action-icons {
+      display: block;
+    }
+  }
+  .action-icons {
+    display: none;
+  }
+}

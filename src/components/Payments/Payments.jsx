@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 // IMPORT COMPONENTS
 import Card from "../UI/Card";
 import CardHeader from "../UI/CardHeader";
@@ -9,6 +10,7 @@ import Spinner from "../UI/Spinner";
 import SumOfTotal from "../Common/SumOfTotal";
 //IMPORT UTILS
 import apiClient, { webClient } from "../../util/Axios";
+import { toastifyConfig } from "../../util/Util";
 
 function Payments(props) {
   const currentYear = props.year;
@@ -51,7 +53,7 @@ function Payments(props) {
       })
       .catch((error) => {
         setIsFetching(false);
-        console.log(error);
+        console.log("Payments Line 56: ", error);
       });
   }, [currentYear, currentMonth, newPayment]);
 
@@ -61,6 +63,25 @@ function Payments(props) {
    */
   function newPaymentHandler() {
     setNewPayment((payment) => (payment = payment + 1));
+  }
+
+  /**
+   * Delete Payment Function
+   */
+  function deletePaymentHandler(id) {
+    const deleteConfirm = window.confirm("Do you want to delete payment ?");
+    if (deleteConfirm) {
+      apiClient
+        .delete("/payment/" + id)
+        .then((response) => {
+          toast.warn("Payment Has Deleted", toastifyConfig);
+          newPaymentHandler();
+        })
+        .catch((error) => {
+          console.log("Payments 81 Line:", error);
+          toast.error("Somethings Wrong!", toastifyConfig);
+        });
+    }
   }
 
   return (
@@ -78,6 +99,7 @@ function Payments(props) {
                   key={category.id}
                   category={category}
                   items={payments}
+                  onDelete={deletePaymentHandler}
                   totals={
                     totals &&
                     totals.filter((total) => {
@@ -89,7 +111,7 @@ function Payments(props) {
             );
           })}
         {/*** OUTPUT ALL GENERAL PAYMENTS*/}
-        {!isFetching && generalPayments && <GeneralList payments={generalPayments} />}
+        {!isFetching && generalPayments && <GeneralList payments={generalPayments} onDelete={deletePaymentHandler} />}
         {/** OUTPUT SUM OF TOTAL */}
         {!isFetching && <SumOfTotal sum={sum} className="text-red-600 border-b-slate-600" />}
       </Card>

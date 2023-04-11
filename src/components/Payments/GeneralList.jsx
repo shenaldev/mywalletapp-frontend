@@ -1,4 +1,4 @@
-import ListItem from "./ListItem";
+import PaymentItem from "./PaymentItem";
 
 function GeneralList(props) {
   const payments = props.payments;
@@ -11,7 +11,7 @@ function GeneralList(props) {
           <ul className="text-sm font-medium">
             {payments &&
               payments.map((payment) => {
-                return <ListItem payment={payment} />;
+                return <PaymentItem key={payment.id} payment={payment} onDelete={props.onDelete} />;
               })}
           </ul>
         </div>

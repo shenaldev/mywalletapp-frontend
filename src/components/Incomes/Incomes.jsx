@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 //IMPORT COMPONENTS
 import Card from "../UI/Card";
 import CardHeader from "../UI/CardHeader";
 import AddIncome from "./AddIncome";
 import IncomeItem from "./IncomeItem";
+import Spinner from "../UI/Spinner";
+import SumOfTotal from "../Common/SumOfTotal";
 //IMPORT UTILS
 import apiClient from "../../util/Axios";
-import SumOfTotal from "../Common/SumOfTotal";
-import Spinner from "../UI/Spinner";
+import { toastifyConfig } from "../../util/Util";
 
 function Incomes(props) {
   const currentYear = props.year;
@@ -53,6 +55,25 @@ function Incomes(props) {
     setNewIncome((income) => (income = income + 1));
   }
 
+  /**
+   * Delete Income Function
+   */
+  function deleteIncomeHandler(id) {
+    const deleteConfirm = window.confirm("Do you want to delete income ?");
+    if (deleteConfirm) {
+      apiClient
+        .delete("/income/" + id)
+        .then((response) => {
+          toast.warn("Income Has Deleted", toastifyConfig);
+          newIncomeHandler();
+        })
+        .catch((error) => {
+          console.log("Incomes 81 Line:", error);
+          toast.error("Somethings Wrong!", toastifyConfig);
+        });
+    }
+  }
+
   return (
     <>
       <Card>
@@ -62,7 +83,7 @@ function Incomes(props) {
           <ul className="mx-4 mt-4 font-medium text-sm">
             {incomes &&
               incomes.map((income) => {
-                return <IncomeItem key={income.id} income={income} />;
+                return <IncomeItem key={income.id} income={income} onDelete={deleteIncomeHandler} />;
               })}
           </ul>
         )}

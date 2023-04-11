@@ -61,4 +61,14 @@
   transform: rotate(-45deg);
   background: #ff3b3b;
   margin-top: -10px;
+}
+
+/**
+* EDIT DELETE BUTTON STYLES AND EVENT
+***/
+.transaction-list:hover .action-icons {
+  display: block;
+}
+.transaction-list .action-icons {
+  display: none;
 }/*# sourceMappingURL=styles.css.map */

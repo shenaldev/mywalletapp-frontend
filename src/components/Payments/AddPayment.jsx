@@ -15,6 +15,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 //IMPORT UTILS
 import apiClient, { axiosError, webClient } from "../../util/Axios";
+import { toastifyConfig } from "../../util/Util";
 
 function AddPayment(props) {
   const [isSubmiting, setIsSubmiting] = useState(false);
@@ -56,16 +57,7 @@ function AddPayment(props) {
           setIsSubmiting(false);
           formik.resetForm();
           modelHideHandler();
-          toast.success("Payment Saved Successfully!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
+          toast.success("Payment Saved Successfully!", toastifyConfig);
         }
       })
       .catch((error) => {
