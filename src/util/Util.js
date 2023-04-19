@@ -1,5 +1,6 @@
 export function numberFormat(number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  let n = parseFloat(number).toFixed(2);
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 export const toastifyConfig = {

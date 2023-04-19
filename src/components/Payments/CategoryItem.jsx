@@ -28,10 +28,11 @@ function CategoryItem(props) {
           {/** OUTPUT 0 IF TOTAL NOT EXISTS */}
           {totals && totals.length <= 0 && "0.00"}
           {/** OUTPUT EXPAND BUTTON IF ANY TRANACTION EXISTS */}
-          {totals &&
+          {totals.length > 0 &&
             totals.map((total) => {
               return (
-                total.category_id == category.id && (
+                total.category_id == category.id &&
+                total.total > 0 && (
                   <button key={Math.random() * 1} className="flex gap-2 items-center" onClick={expandClickHandler}>
                     {expand ? <BsCaretUpFill color="red" /> : <BsCaretDownFill color="green" />}
                   </button>
@@ -40,11 +41,12 @@ function CategoryItem(props) {
             })}
         </span>
       </div>
-      {expand && payments && payments[category.id] && (
+      {/** OUTPUT PAYMENTS */}
+      {expand && payments && payments[category.slug] != undefined && payments[category.slug].length > 0 && (
         <div className="bg-lightestBlue px-4 py-4 mt-2">
           <ul className="text-sm font-medium">
-            {payments[category.id] &&
-              payments[category.id].map((payment) => {
+            {payments[category.slug] &&
+              payments[category.slug].map((payment) => {
                 return <PaymentItem key={payment.id} payment={payment} onDelete={props.onDelete} />;
               })}
           </ul>

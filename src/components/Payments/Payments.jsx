@@ -5,7 +5,6 @@ import Card from "../UI/Card";
 import CardHeader from "../UI/CardHeader";
 import AddPayment from "./AddPayment";
 import CategoryItem from "./CategoryItem";
-import GeneralList from "./GeneralList";
 import Spinner from "../UI/Spinner";
 import SumOfTotal from "../Common/SumOfTotal";
 //IMPORT UTILS
@@ -21,7 +20,6 @@ function Payments(props) {
   const [totals, setTotals] = useState(null); //Total Amount By Category
   const [sum, setSum] = useState(null); // Total Sum Of Payments
   const [isFetching, setIsFetching] = useState(false);
-  const [newPayment, setNewPayment] = useState(0);
 
   // MODAL SHOW AND HIDE FUNCTIONS
   const showAddModalHanlder = () => setShowModal(true);
@@ -53,36 +51,90 @@ function Payments(props) {
         setIsFetching(false);
         console.log("Payments Line 56: ", error);
       });
-  }, [currentYear, currentMonth, newPayment]);
+  }, [currentYear, currentMonth]);
 
   /**
-   * On new payment is added increase newPayment value by one
-   * It will execute useefect and load new data
+   * UPDATE PAYMENTS OBJECT (useState) WHEN NEW PAYMENT HAS BEEN ADDED
+   * Update Totals Payment Categories
+   * Update Sum Of Totals
+   * @param payment = Newly added payment object
    */
   function newPaymentHandler(payment) {
-    //setNewPayment((payment) => (payment = payment + 1));
+    //Get category of newly added payment
     const category = categories.filter((category) => {
       return category.id == payment.category_id;
     });
     const categorySlug = category[0].slug;
 
-    setPayments((payments) => ({
-      ...payments,
-      [categorySlug]: [
-        ...payments[categorySlug],
-        {
-          id: payment.id,
-          payment_for: payment.payment_for,
-          amount: payment.amount,
-          date: payment.date,
-          category_id: payment.category_id,
-          category: {
-            category_id: payment.category_id,
-            slug: categorySlug,
-          },
-        },
-      ],
-    }));
+    //UPDATE PAYMENTS OBJECT
+    setPayments((payments) => {
+      if (payments[categorySlug]) {
+        return { ...payments, [categorySlug]: [...payments[categorySlug], payment] };
+      }
+      const newPayments = { ...payments, [categorySlug]: [payment] };
+      return newPayments;
+    });
+    //UPDATE TOTALS VALUE ON ADD NEW PAYMENT
+    setTotals((prevState) => {
+      //CHECK IS TOTAL CATEGORY IS IN TOTALS ARRAY IF NOT ADD IT ELSE UPDATE
+      const isCategoryInTotals = totals.some((t) => t.slug == categorySlug);
+      let newTotals = null;
+      if (isCategoryInTotals) {
+        newTotals = prevState.map((total) => {
+          if (total.slug == categorySlug) {
+            const ntotal = (parseFloat(total.total) - parseFloat(payment.amount)).toFixed(2);
+            return { ...total, total: ntotal.toString() };
+          }
+          return total;
+        });
+      } else {
+        newTotals = [...prevState, { category_id: payment.category_id, slug: categorySlug, total: payment.amount }];
+      }
+      return newTotals;
+    });
+    //UPDATE SUM OF TOTALS
+    setSum((prevState) => {
+      return (parseFloat(prevState) + parseFloat(payment.amount)).toFixed(2);
+    });
+  }
+
+  /**
+   * Delete Payment From Payments Object on Payment Delete
+   * Update Payments Totals
+   * Update Sum Of Total
+   * @param {*} payment Deleted Payment
+   */
+  function onPaymentDelete(payment) {
+    const category = categories.filter((category) => {
+      return category.id == payment.category_id;
+    });
+    const categorySlug = category[0].slug;
+    const categoryID = category[0].id;
+
+    //UPDATE PAYMENTS OBJECT
+    setPayments((payments) => {
+      return {
+        ...payments,
+        [categorySlug]: payments[categorySlug].filter((item) => {
+          return item.id != payment.id;
+        }),
+      };
+    });
+    //UPDATE TOTALS VALUE ON DELETE
+    setTotals((prevState) => {
+      const newTotals = prevState.map((total) => {
+        if (total.category_id == categoryID) {
+          const newTotal = (parseFloat(total.total) - parseFloat(payment.amount)).toFixed(2);
+          return { ...total, total: newTotal.toString() };
+        }
+        return total;
+      });
+      return newTotals;
+    });
+    //UPDATE SUM OF TOTALS
+    setSum((prevState) => {
+      return (parseFloat(prevState) - parseFloat(payment.amount)).toFixed(2);
+    });
   }
 
   /**
@@ -95,7 +147,9 @@ function Payments(props) {
         .delete("/payment/" + id)
         .then((response) => {
           toast.warn("Payment Has Deleted", toastifyConfig);
-          //newPaymentHandler();
+          if (response.data.success == true) {
+            onPaymentDelete(response.data.payment);
+          }
         })
         .catch((error) => {
           console.log("Payments 81 Line:", error);

@@ -1,23 +1,12 @@
-import Modal from "../../components/UI/Modal";
-import Card from "../../components/UI/Card";
-import Button from "../../components/UI/Button";
-import FormRow from "../../components/UI/Forms/FormRow";
-import FormGroup from "../../components/UI/Forms/FormGroup";
-import Input from "../../components/UI/Forms/Input";
-import Spinner from "../../components/UI/Spinner";
-import InputError from "../UI/Forms/InputError";
-import ErrorList from "../UI/Forms/ErrorList";
 import ModalHeader from "../Common/ModalHeader";
+import Card from "../UI/Card";
+import Modal from "../UI/Modal";
 //IMPORT LIBS
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
-import { toast } from "react-toastify";
-//IMPORT UTILS
-import apiClient, { axiosError, webClient } from "../../util/Axios";
-import { toastifyConfig } from "../../util/Util";
 
-function AddPayment(props) {
+function EditPayment(props) {
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [validationErrors, setValidationErrors] = useState(false);
   const categories = props.categories;
@@ -41,36 +30,14 @@ function AddPayment(props) {
     }),
     onSubmit: (values) => {
       setIsSubmiting(true);
-      addPaymentHandler(values);
+      //addPaymentHandler(values);
     },
   });
 
-  //SAVE DATA IN THE DATABASE
-  function addPaymentHandler(values) {
-    setValidationErrors(false);
-    webClient.get("/sanctum/csrf-cookie");
-    apiClient
-      .post("/payments/add", values)
-      .then((response) => {
-        if (response.status == 200) {
-          props.onAdd(response.data.payment); // UPDATE PAYMENTS ON PAYMENTS COMPONENT
-          setIsSubmiting(false);
-          formik.resetForm();
-          modelHideHandler();
-          toast.success("Payment Saved Successfully!", toastifyConfig);
-        }
-      })
-      .catch((error) => {
-        const err = axiosError(error);
-        setValidationErrors(err);
-        setIsSubmiting(false);
-      });
-  }
-
   return (
     <Modal>
-      <Card className="max-w-xs max-h-[90vh] md:min-w-[28rem] md:max-w-md overflow-y-auto">
-        <ModalHeader title="Add New Payment" closeButtonClick={modelHideHandler} />
+      <Card>
+        <ModalHeader title="Edit Payment" closeButtonClick={modelHideHandler} />
         {/**IF HAS ANY ERROR IN BACKEND VALIDATION **/}
         {validationErrors && <ErrorList errors={validationErrors} />}
         {/** CHECK IS FORM SUBMITING **/}
@@ -146,7 +113,7 @@ function AddPayment(props) {
               />
             </FormRow>
             <FormRow>
-              <Button type="submit">Save</Button>
+              <Button type="submit">Update</Button>
             </FormRow>
           </form>
         )}{" "}
@@ -163,4 +130,4 @@ function AddPayment(props) {
   );
 }
 
-export default AddPayment;
+export default EditPayment;
