@@ -20,7 +20,6 @@ function Payments(props) {
   const [payments, setPayments] = useState(null);
   const [totals, setTotals] = useState(null); //Total Amount By Category
   const [sum, setSum] = useState(null); // Total Sum Of Payments
-  const [generalPayments, setGeneralPayments] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [newPayment, setNewPayment] = useState(0);
 
@@ -47,7 +46,6 @@ function Payments(props) {
       .then((response) => {
         setIsFetching(false);
         setPayments(response.data.payments);
-        setGeneralPayments(response.data.general);
         setTotals(response.data.totals);
         setSum(response.data.payments_sum);
       })
@@ -61,8 +59,30 @@ function Payments(props) {
    * On new payment is added increase newPayment value by one
    * It will execute useefect and load new data
    */
-  function newPaymentHandler() {
-    setNewPayment((payment) => (payment = payment + 1));
+  function newPaymentHandler(payment) {
+    //setNewPayment((payment) => (payment = payment + 1));
+    const category = categories.filter((category) => {
+      return category.id == payment.category_id;
+    });
+    const categorySlug = category[0].slug;
+
+    setPayments((payments) => ({
+      ...payments,
+      [categorySlug]: [
+        ...payments[categorySlug],
+        {
+          id: payment.id,
+          payment_for: payment.payment_for,
+          amount: payment.amount,
+          date: payment.date,
+          category_id: payment.category_id,
+          category: {
+            category_id: payment.category_id,
+            slug: categorySlug,
+          },
+        },
+      ],
+    }));
   }
 
   /**
@@ -75,7 +95,7 @@ function Payments(props) {
         .delete("/payment/" + id)
         .then((response) => {
           toast.warn("Payment Has Deleted", toastifyConfig);
-          newPaymentHandler();
+          //newPaymentHandler();
         })
         .catch((error) => {
           console.log("Payments 81 Line:", error);
@@ -94,24 +114,20 @@ function Payments(props) {
         {!isFetching &&
           categories.map((category) => {
             return (
-              category.id != 1 && ( // PREVENT OUTPUTING PRIMARY CATEGORY ON LIST
-                <CategoryItem
-                  key={category.id}
-                  category={category}
-                  items={payments}
-                  onDelete={deletePaymentHandler}
-                  totals={
-                    totals &&
-                    totals.filter((total) => {
-                      return total.category_id == category.id;
-                    })
-                  }
-                />
-              )
+              <CategoryItem
+                key={category.id}
+                category={category}
+                items={payments}
+                onDelete={deletePaymentHandler}
+                totals={
+                  totals &&
+                  totals.filter((total) => {
+                    return total.category_id == category.id;
+                  })
+                }
+              />
             );
           })}
-        {/*** OUTPUT ALL GENERAL PAYMENTS*/}
-        {!isFetching && generalPayments && <GeneralList payments={generalPayments} onDelete={deletePaymentHandler} />}
         {/** OUTPUT SUM OF TOTAL */}
         {!isFetching && <SumOfTotal sum={sum} className="text-red-600 border-b-slate-600" />}
       </Card>
