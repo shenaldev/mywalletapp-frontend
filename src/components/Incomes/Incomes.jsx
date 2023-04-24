@@ -62,7 +62,16 @@ function Incomes(props) {
     }
 
     setIncomes((prevState) => {
-      return [...prevState, { id: income.id, from: income.from, value: income.value, date: income.date }];
+      return [
+        ...prevState,
+        {
+          id: income.id,
+          from: income.from,
+          value: income.value,
+          date: income.date,
+          additional_details: income.additional_details,
+        },
+      ];
     });
     setSum((prevState) => {
       return parseFloat(prevState) + parseFloat(income.value);
