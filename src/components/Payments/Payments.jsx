@@ -85,6 +85,7 @@ function Payments(props) {
       const newPayments = { ...payments, [categorySlug]: [payment] };
       return newPayments;
     });
+
     //UPDATE TOTALS VALUE ON ADD NEW PAYMENT
     setTotals((prevState) => {
       //CHECK IS TOTAL CATEGORY IS IN TOTALS ARRAY IF NOT ADD IT ELSE UPDATE
@@ -103,6 +104,7 @@ function Payments(props) {
       }
       return newTotals;
     });
+
     //UPDATE SUM OF TOTALS
     setSum((prevState) => {
       return (parseFloat(prevState) + parseFloat(payment.amount)).toFixed(2);

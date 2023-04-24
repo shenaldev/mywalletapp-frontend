@@ -1,8 +1,6 @@
 import { useState } from "react";
 //IMPORT COMPONENTS
-import Modal from "../UI/Modal";
-import Card from "../UI/Card";
-import ModalHeader from "../Common/ModalHeader";
+import AdditionalDetailModal from "./AdditionalDetailsModal";
 //IMPORT ICONS
 import { BsPencil, BsTrash, BsEye } from "react-icons/bs";
 //IMPORT UTILS
@@ -42,36 +40,7 @@ function PaymentItem(props) {
         </div>
       </li>
       {/** SHOW ADDITIONAL DETAILS MODAL */}
-      {showDetails && (
-        <Modal>
-          <Card className="max-w-xs max-h-[90vh] md:min-w-[28rem] md:max-w-md overflow-y-auto">
-            <ModalHeader title="Payment Details" closeButtonClick={hideModalHandler} />
-            <div className="mt-6 text-slate-900">
-              <table className="w-full">
-                <tbody>
-                  <tr>
-                    <td>Payment For</td>
-                    <td className="px-4">:</td>
-                    <td>{payment.payment_for}</td>
-                  </tr>
-                  <tr>
-                    <td>Amount</td>
-                    <td className="px-4">:</td>
-                    <td>{numberFormat(payment.amount)}</td>
-                  </tr>
-                  <tr>
-                    <td>Date</td>
-                    <td className="px-4">:</td>
-                    <td>{payment.date}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <p className="mt-3">Additional Details : {payment.additional_details.details}</p>
-            </div>
-          </Card>
-        </Modal>
-      )}
-      {/** SHOW ADDITIONAL DETAILS MODAL END*/}
+      {showDetails && <AdditionalDetailModal payment={payment} hideModalHandler={hideModalHandler} />}
     </>
   );
 }
