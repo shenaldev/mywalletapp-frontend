@@ -68,7 +68,12 @@ function Payments(props) {
    * @param payment = Newly added payment object
    */
   function newPaymentHandler(payment) {
-    console.log("newpayment: ", payment);
+    //CHECK IF PAYMENT IS IN CURRENT MONTH AND YEAR
+    const paymentDate = new Date(payment.date);
+    if (paymentDate.getMonth() != currentMonth || paymentDate.getFullYear() != currentYear) {
+      return;
+    }
+
     //Get category of newly added payment
     const categorySlug = getCategorySlug(categories, payment.category_id);
 
@@ -161,11 +166,20 @@ function Payments(props) {
     }
   }
 
+  /**
+   * SHOW EDIT PAYMENT MODAL WITH OLD PAYMENT DATA
+   * @param {*} payment old payment object
+   */
   function editPaymentHandler(payment) {
     setEditPayment(payment);
     showEditModalHanlder();
   }
 
+  /**
+   * UPDATE PAYMENTS OBJECT (useState) WHEN PAYMENT HAS BEEN UPDATED
+   * @param {*} payment Updated Payment Object
+   * @param {*} oldCost Old Payment Cost
+   */
   function onPaymentUpdate(payment, oldCost) {
     const categorySlug = getCategorySlug(categories, payment.category_id);
     const categoryID = getCategoryID(categories, payment.category_id);
