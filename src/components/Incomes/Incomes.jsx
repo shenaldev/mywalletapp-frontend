@@ -29,7 +29,7 @@ function Incomes(props) {
   const hideModalHandler = () => setShowModal(false);
 
   /**
-   * Get all incomes
+   * GET ALL INCOMES
    */
   useEffect(() => {
     setIsFetching(true);
@@ -51,8 +51,24 @@ function Incomes(props) {
    * On new income is added increase newIncome value by one
    * It will execute useefect and load new data
    */
-  function newIncomeHandler() {
-    setNewIncome((income) => (income = income + 1));
+  function newIncomeHandler(income) {
+    setIncomes((prevState) => {
+      return [...prevState, { id: income.id, from: income.from, value: income.value, date: income.date }];
+    });
+    setSum((prevState) => {
+      return parseFloat(prevState) + parseFloat(income.value);
+    });
+  }
+
+  function onDeleteHandler(income) {
+    setIncomes((prevState) => {
+      return prevState.filter((item) => {
+        return item.id != income.id;
+      });
+    });
+    setSum((prevState) => {
+      return parseFloat(prevState) - parseFloat(income.value);
+    });
   }
 
   /**
@@ -65,7 +81,9 @@ function Incomes(props) {
         .delete("/income/" + id)
         .then((response) => {
           toast.warn("Income Has Deleted", toastifyConfig);
-          newIncomeHandler();
+          if (response.data.success == true) {
+            onDeleteHandler(response.data.income);
+          }
         })
         .catch((error) => {
           console.log("Incomes 81 Line:", error);
