@@ -1,15 +1,28 @@
 import ModalHeader from "../Common/ModalHeader";
 import Card from "../UI/Card";
 import Modal from "../UI/Modal";
+import FormRow from "../UI/Forms/FormRow";
+import Input from "../UI/Forms/Input";
+import FormGroup from "../UI/Forms/FormGroup";
+import ErrorList from "../UI/Forms/ErrorList";
+import Button from "../UI/Button";
+import Spinner from "../UI/Spinner";
 //IMPORT LIBS
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
+import { toast } from "react-toastify";
+//IMPORT UTILS
+import { toastifyConfig } from "../../util/Util";
+import apiClient, { axiosError, webClient } from "../../util/Axios";
 
 function EditPayment(props) {
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [validationErrors, setValidationErrors] = useState(false);
   const categories = props.categories;
+  const payment = props.payment;
+  const additional_details = payment.additional_details ? payment.additional_details.details : "";
+
   const modelHideHandler = () => {
     props.modalHide();
   };
@@ -17,11 +30,11 @@ function EditPayment(props) {
   //FORM VALIATION
   const formik = useFormik({
     initialValues: {
-      payment_for: "",
-      cost: "",
-      date: "",
-      category: 1,
-      additional_details: "",
+      payment_for: payment.payment_for,
+      cost: payment.amount,
+      date: payment.date,
+      category: payment.category_id,
+      additional_details: additional_details,
     },
     validationSchema: Yup.object({
       payment_for: Yup.string().required().min(3).max(200).label("Payment for"),
@@ -30,13 +43,36 @@ function EditPayment(props) {
     }),
     onSubmit: (values) => {
       setIsSubmiting(true);
-      //addPaymentHandler(values);
+      updatePaymentHandler(values);
     },
   });
 
+  /**
+   * UPDATE PAYMENT IN THE DATABASE
+   * @param {*} values FORM DATA
+   */
+  function updatePaymentHandler(values) {
+    setValidationErrors(false);
+    webClient.get("/sanctum/csrf-cookie");
+    apiClient
+      .put(`/payment/${payment.id}`, values)
+      .then((response) => {
+        props.onUpdate(response.data.payment, payment.amount); // UPDATE PAYMENTS ON PAYMENTS COMPONENT
+        setIsSubmiting(false);
+        modelHideHandler();
+        toast.success("Payment Updated Successfully!", toastifyConfig);
+      })
+      .catch((error) => {
+        const err = axiosError(error);
+        setValidationErrors(err);
+        setIsSubmiting(false);
+        console.log("Edit Payment Component: ", error);
+      });
+  }
+
   return (
     <Modal>
-      <Card>
+      <Card className="max-w-xs max-h-[90vh] md:min-w-[28rem] md:max-w-md overflow-y-auto">
         <ModalHeader title="Edit Payment" closeButtonClick={modelHideHandler} />
         {/**IF HAS ANY ERROR IN BACKEND VALIDATION **/}
         {validationErrors && <ErrorList errors={validationErrors} />}

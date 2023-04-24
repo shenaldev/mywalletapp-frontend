@@ -47,7 +47,7 @@ function CategoryItem(props) {
           <ul className="text-sm font-medium">
             {payments[category.slug] &&
               payments[category.slug].map((payment) => {
-                return <PaymentItem key={payment.id} payment={payment} onDelete={props.onDelete} />;
+                return <PaymentItem key={payment.id} payment={payment} onEdit={props.onEdit} onDelete={props.onDelete} />;
               })}
           </ul>
         </div>

@@ -7,23 +7,31 @@ import AddPayment from "./AddPayment";
 import CategoryItem from "./CategoryItem";
 import Spinner from "../UI/Spinner";
 import SumOfTotal from "../Common/SumOfTotal";
+import EditPayment from "./EditPayment";
 //IMPORT UTILS
 import apiClient, { webClient } from "../../util/Axios";
 import { toastifyConfig } from "../../util/Util";
+import { getCategoryID, getCategorySlug } from "../../util/Payments";
 
 function Payments(props) {
   const currentYear = props.year;
   const currentMonth = props.month;
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [categories, setCategories] = useState([]);
   const [payments, setPayments] = useState(null);
   const [totals, setTotals] = useState(null); //Total Amount By Category
   const [sum, setSum] = useState(null); // Total Sum Of Payments
   const [isFetching, setIsFetching] = useState(false);
+  const [editPayment, setEditPayment] = useState(null); //Payment Object To Edit Modal
 
   // MODAL SHOW AND HIDE FUNCTIONS
   const showAddModalHanlder = () => setShowModal(true);
   const hideModalHandler = () => setShowModal(false);
+
+  //EDIT MODAL SHOW AND HIDE FUNCTIONS
+  const showEditModalHanlder = () => setShowEditModal(true);
+  const hideEditModalHandler = () => setShowEditModal(false);
 
   //GET ALL PAYMENT CATEGORIES FROM DB AND PASS IT TO ADDPAYMENT COMPONENT
   useEffect(() => {
@@ -60,11 +68,9 @@ function Payments(props) {
    * @param payment = Newly added payment object
    */
   function newPaymentHandler(payment) {
+    console.log("newpayment: ", payment);
     //Get category of newly added payment
-    const category = categories.filter((category) => {
-      return category.id == payment.category_id;
-    });
-    const categorySlug = category[0].slug;
+    const categorySlug = getCategorySlug(categories, payment.category_id);
 
     //UPDATE PAYMENTS OBJECT
     setPayments((payments) => {
@@ -82,7 +88,7 @@ function Payments(props) {
       if (isCategoryInTotals) {
         newTotals = prevState.map((total) => {
           if (total.slug == categorySlug) {
-            const ntotal = (parseFloat(total.total) - parseFloat(payment.amount)).toFixed(2);
+            const ntotal = (parseFloat(total.total) + parseFloat(payment.amount)).toFixed(2);
             return { ...total, total: ntotal.toString() };
           }
           return total;
@@ -105,11 +111,8 @@ function Payments(props) {
    * @param {*} payment Deleted Payment
    */
   function onPaymentDelete(payment) {
-    const category = categories.filter((category) => {
-      return category.id == payment.category_id;
-    });
-    const categorySlug = category[0].slug;
-    const categoryID = category[0].id;
+    const categorySlug = getCategorySlug(categories, payment.category_id);
+    const categoryID = getCategoryID(categories, payment.category_id);
 
     //UPDATE PAYMENTS OBJECT
     setPayments((payments) => {
@@ -152,10 +155,53 @@ function Payments(props) {
           }
         })
         .catch((error) => {
-          console.log("Payments 81 Line:", error);
+          console.log("Payments deletePaymentHandler() :", error);
           toast.error("Somethings Wrong!", toastifyConfig);
         });
     }
+  }
+
+  function editPaymentHandler(payment) {
+    setEditPayment(payment);
+    showEditModalHanlder();
+  }
+
+  function onPaymentUpdate(payment, oldCost) {
+    const categorySlug = getCategorySlug(categories, payment.category_id);
+    const categoryID = getCategoryID(categories, payment.category_id);
+
+    //UPDATE PAYMENTS OBJECT
+    setPayments((payments) => {
+      return {
+        ...payments,
+        [categorySlug]: payments[categorySlug].map((item) => {
+          if (item.id == payment.id) {
+            return payment;
+          }
+          return item;
+        }),
+      };
+    });
+
+    //UPDATE TOTALS VALUE ON UPDATE
+    setTotals((prevState) => {
+      const newTotals = prevState.map((total) => {
+        if (total.category_id == categoryID) {
+          const calTotal = parseFloat(total.total) - parseFloat(oldCost);
+          const newTotal = parseFloat(calTotal) + parseFloat(payment.amount);
+          return { ...total, total: newTotal.toString() };
+        }
+        return total;
+      });
+      return newTotals;
+    });
+
+    //UPDATE SUM OF TOTALS
+    setSum((prevState) => {
+      const calSum = parseFloat(prevState) - parseFloat(oldCost);
+      const newSum = parseFloat(calSum) + parseFloat(payment.amount);
+      return newSum;
+    });
   }
 
   return (
@@ -172,6 +218,7 @@ function Payments(props) {
                 key={category.id}
                 category={category}
                 items={payments}
+                onEdit={editPaymentHandler}
                 onDelete={deletePaymentHandler}
                 totals={
                   totals &&
@@ -185,8 +232,12 @@ function Payments(props) {
         {/** OUTPUT SUM OF TOTAL */}
         {!isFetching && <SumOfTotal sum={sum} className="text-red-600 border-b-slate-600" />}
       </Card>
-      {/** ADD PAYMENT MODAL ON ADD BUTTON CLICK */}
+      {/** SHOW PAYMENT MODAL ON ADD BUTTON CLICK */}
       {showModal && <AddPayment modalHide={hideModalHandler} categories={categories} onAdd={newPaymentHandler} />}
+      {/** SHOW EDIT PAYMENT MODAL ON EDIT BUTTON CLICK */}
+      {showEditModal && (
+        <EditPayment modalHide={hideEditModalHandler} categories={categories} payment={editPayment} onUpdate={onPaymentUpdate} />
+      )}
     </>
   );
 }
