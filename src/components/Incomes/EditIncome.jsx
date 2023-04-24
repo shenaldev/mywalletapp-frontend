@@ -17,18 +17,22 @@ import * as Yup from "yup";
 import apiClient, { axiosError, webClient } from "../../util/Axios";
 import { toastifyConfig } from "../../util/Util";
 
-function AddIncome(props) {
+function EditIncome(props) {
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [validationErrors, setValidationErrors] = useState(false);
+  const income = props.income;
+  const additional_details = income.additional_details ? income.additional_details.details : "";
+
   //Modal Hide Handler
   const modelHideHandler = () => props.modalHide();
 
   //FORM VALIATION
   const formik = useFormik({
     initialValues: {
-      from: "",
-      value: "",
-      date: "",
+      from: income.from,
+      value: income.value,
+      date: income.date,
+      additional_details: additional_details,
     },
     validationSchema: Yup.object({
       from: Yup.string().required().min(3).max(200).label("From"),
@@ -37,30 +41,30 @@ function AddIncome(props) {
     }),
     onSubmit: (values) => {
       setIsSubmiting(true);
-      addIncomeHandler(values);
+      updateIncomeHandler(values);
     },
   });
 
-  //SAVE DATA IN THE DATABASE
-  function addIncomeHandler(values) {
+  /**
+   * UPDATE INCOME IN THE DATABASE
+   * @param {*} values FORM DATA
+   */
+  function updateIncomeHandler(values) {
     setValidationErrors(false);
     webClient.get("/sanctum/csrf-cookie");
     apiClient
-      .post("/incomes/add", values)
+      .put(`/income/${income.id}`, values)
       .then((response) => {
-        if (response.status == 200) {
-          props.onAdd(response.data.income); // UPDATE INCOMES STATE ON ADD
-          setIsSubmiting(false);
-          formik.resetForm();
-          modelHideHandler();
-          toast.success("Income Saved Successfully!", toastifyConfig);
-        }
+        props.onUpdate(response.data.income, income.value); // UPDATE INCOMES ON INCOMES COMPONENT
+        setIsSubmiting(false);
+        modelHideHandler();
+        toast.success("Income updated successfully", toastifyConfig);
       })
       .catch((error) => {
-        setIsSubmiting(false);
-        console.log("line 66 AddIncome" + error);
+        console.log("Edit Income UpdateIncomeHandler(): ", error);
         const err = axiosError(error);
         setValidationErrors(err);
+        setIsSubmiting(false);
       });
   }
 
@@ -140,4 +144,4 @@ function AddIncome(props) {
   );
 }
 
-export default AddIncome;
+export default EditIncome;
