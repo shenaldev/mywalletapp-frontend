@@ -58,7 +58,7 @@ function Header(props) {
             avatarClick ? "flex" : "hidden"
           } absolute flex-col gap-2 bg-white shadow px-4 py-6 rounded-sm w-36 right-0 font-medium`}
         >
-          <Link to="/profile" className="hover:text-primaryColor">
+          <Link to="#" className="hover:text-primaryColor">
             Profile
           </Link>
           <Link to="/logout" className="hover:text-primaryColor">

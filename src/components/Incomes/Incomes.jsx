@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 //IMPORT COMPONENTS
 import Card from "../UI/Card";
 import CardHeader from "../UI/CardHeader";
@@ -15,6 +16,7 @@ import EditIncome from "./EditIncome";
 function Incomes(props) {
   const currentYear = props.year;
   const currentMonth = props.month;
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [incomes, setIncomes] = useState(null);
@@ -22,7 +24,6 @@ function Incomes(props) {
   const [isFetching, setIsFetching] = useState(false);
   const [editIncome, setEditIncome] = useState(null); //Income Object for Edit Modal
 
-  //console.log(incomes);
   // MODAL SHOW AND HIDE FUNCTIONS
   const showAddModalHanlder = () => setShowModal(true);
   const hideModalHandler = () => setShowModal(false);
@@ -47,6 +48,7 @@ function Incomes(props) {
       .catch((error) => {
         setIsFetching(false);
         console.log("Income Component: ", error);
+        navigate("/error");
       });
   }, [currentYear, currentMonth]);
 

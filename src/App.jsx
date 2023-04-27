@@ -19,6 +19,7 @@ const router = createBrowserRouter([
     children: [{ index: true, element: <HomePage /> }],
   },
   { path: "/logout", element: <LogoutPage /> },
+  { path: "/error", element: <ErrorBoundary /> },
   {
     path: "/auth",
     element: <AuthRoot />,

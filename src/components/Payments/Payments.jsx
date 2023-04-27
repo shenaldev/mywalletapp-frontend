@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 // IMPORT COMPONENTS
 import Card from "../UI/Card";
 import CardHeader from "../UI/CardHeader";
@@ -16,6 +17,7 @@ import { getCategoryID, getCategorySlug } from "../../util/Payments";
 function Payments(props) {
   const currentYear = props.year;
   const currentMonth = props.month;
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -58,6 +60,7 @@ function Payments(props) {
       .catch((error) => {
         setIsFetching(false);
         console.log("Payments Line 56: ", error);
+        navigate("/error");
       });
   }, [currentYear, currentMonth]);
 

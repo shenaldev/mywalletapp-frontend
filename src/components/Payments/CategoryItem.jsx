@@ -9,7 +9,7 @@ function CategoryItem(props) {
   const category = props.category;
   const payments = props.items;
   const totals = props.totals;
-  const [expand, setExpand] = useState(false);
+  const [expand, setExpand] = useState(category.slug == "general" ? true : false);
 
   function expandClickHandler() {
     setExpand((expand) => (expand = !expand));
