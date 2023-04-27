@@ -9,17 +9,20 @@ import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import LogoutPage from "./pages/Auth/LogoutPage";
 import NotFound from "./pages/NotFound";
+import ErrorBoundary from "./pages/ErrorBoundary";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    errorElement: <ErrorBoundary />,
     children: [{ index: true, element: <HomePage /> }],
   },
   { path: "/logout", element: <LogoutPage /> },
   {
     path: "/auth",
     element: <AuthRoot />,
+    errorElement: <ErrorBoundary />,
     children: [
       { path: "login/:token_expired?", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
