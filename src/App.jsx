@@ -8,6 +8,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import LogoutPage from "./pages/Auth/LogoutPage";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       { path: "register", element: <RegisterPage /> },
     ],
   },
+  { path: "*", element: <NotFound /> },
 ]);
 
 function App() {

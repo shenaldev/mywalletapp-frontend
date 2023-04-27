@@ -64,11 +64,20 @@
 }
 
 /**
-* EDIT DELETE BUTTON STYLES AND EVENT
+* TRANSCATIONS EDIT DELETE BUTTON STYLES AND EVENT
 ***/
 .transaction-list:hover .action-icons {
   display: block;
 }
 .transaction-list .action-icons {
   display: none;
+}
+
+/**
+* 404 PAGE STYLES
+***/
+.page-404 {
+  background: url("../img/Moon-bg.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }/*# sourceMappingURL=styles.css.map */

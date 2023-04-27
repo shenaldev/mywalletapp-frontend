@@ -64,7 +64,7 @@ $primary-color: #4b56d2;
 }
 
 /**
-* EDIT DELETE BUTTON STYLES AND EVENT
+* TRANSCATIONS EDIT DELETE BUTTON STYLES AND EVENT
 ***/
 .transaction-list {
   &:hover {
@@ -75,4 +75,13 @@ $primary-color: #4b56d2;
   .action-icons {
     display: none;
   }
+}
+
+/**
+* 404 PAGE STYLES
+***/
+.page-404 {
+  background: url("../img/Moon-bg.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
