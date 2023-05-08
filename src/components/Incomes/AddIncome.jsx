@@ -1,5 +1,4 @@
-import Card from "../UI/Card";
-import Modal from "../UI/Modal";
+import { Modal, ModalContent } from "../UI/Modal";
 import Button from "../UI/Button";
 import Spinner from "../UI/Spinner";
 import Input from "../UI/Forms/Input";
@@ -7,12 +6,12 @@ import FormRow from "../UI/Forms/FormRow";
 import ErrorList from "../UI/Forms/ErrorList";
 import InputError from "../UI/Forms/InputError";
 import FormGroup from "../UI/Forms/FormGroup";
-import ModalHeader from "../Common/ModalHeader";
 //IMPORT LIBS
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { DialogTitle } from "@radix-ui/react-dialog";
 //IMPORT UTILS
 import apiClient, { axiosError, webClient } from "../../util/Axios";
 import { toastifyConfig } from "../../util/Util";
@@ -50,24 +49,25 @@ function AddIncome(props) {
       .then((response) => {
         if (response.status == 200) {
           props.onAdd(response.data.income); // UPDATE INCOMES STATE ON ADD
-          setIsSubmiting(false);
           formik.resetForm();
-          modelHideHandler();
+          props.hideModal();
           toast.success("Income Saved Successfully!", toastifyConfig);
         }
       })
       .catch((error) => {
-        setIsSubmiting(false);
         console.log("line 66 AddIncome" + error);
         const err = axiosError(error);
         setValidationErrors(err);
+      })
+      .finally(() => {
+        setIsSubmiting(false);
       });
   }
 
   return (
-    <Modal>
-      <Card className="max-w-xs max-h-[90vh] md:min-w-[28rem] md:max-w-md overflow-y-auto">
-        <ModalHeader title="Add New Income" closeButtonClick={modelHideHandler} />
+    <Modal open={props.showModal} onOpenChange={props.setShow}>
+      <ModalContent>
+        <DialogTitle className="mb-4 border-b border-b-slate-200 border-spacing-3">Add New Income</DialogTitle>
         {/**IF HAS ANY ERROR IN BACKEND VALIDATION **/}
         {validationErrors && <ErrorList errors={validationErrors} />}
         {/** CHECK IS FORM SUBMITING **/}
@@ -135,7 +135,7 @@ function AddIncome(props) {
             <Spinner />
           </div>
         )}
-      </Card>
+      </ModalContent>
     </Modal>
   );
 }

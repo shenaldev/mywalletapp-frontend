@@ -18,7 +18,7 @@ function Payments(props) {
   const currentYear = props.year;
   const currentMonth = props.month;
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [categories, setCategories] = useState([]);
   const [payments, setPayments] = useState(null);
@@ -28,8 +28,8 @@ function Payments(props) {
   const [editPayment, setEditPayment] = useState(null); //Payment Object To Edit Modal
 
   // MODAL SHOW AND HIDE FUNCTIONS
-  const showAddModalHanlder = () => setShowModal(true);
-  const hideModalHandler = () => setShowModal(false);
+  const showAddModalHanlder = () => setShowAddModal(true);
+  const hideAddModalHandler = () => setShowAddModal(false);
 
   //EDIT MODAL SHOW AND HIDE FUNCTIONS
   const showEditModalHanlder = () => setShowEditModal(true);
@@ -252,10 +252,25 @@ function Payments(props) {
         {!isFetching && <SumOfTotal sum={sum} className="text-red-600 border-b-slate-600" />}
       </Card>
       {/** SHOW PAYMENT MODAL ON ADD BUTTON CLICK */}
-      {showModal && <AddPayment modalHide={hideModalHandler} categories={categories} onAdd={newPaymentHandler} />}
+      {showAddModal && (
+        <AddPayment
+          categories={categories}
+          onAdd={newPaymentHandler}
+          showModal={showAddModal}
+          hideModal={hideAddModalHandler}
+          setShow={setShowAddModal}
+        />
+      )}
       {/** SHOW EDIT PAYMENT MODAL ON EDIT BUTTON CLICK */}
       {showEditModal && (
-        <EditPayment modalHide={hideEditModalHandler} categories={categories} payment={editPayment} onUpdate={onPaymentUpdate} />
+        <EditPayment
+          categories={categories}
+          payment={editPayment}
+          onUpdate={onPaymentUpdate}
+          showModal={showEditModal}
+          hideModal={hideEditModalHandler}
+          setShow={setShowEditModal}
+        />
       )}
     </>
   );

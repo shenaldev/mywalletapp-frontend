@@ -62,7 +62,7 @@ function Root() {
   return (
     <div className="flex">
       <Sidebar month={currentMonth} onMonthChange={monthChangeHandler} />
-      <main className="w-full px-8 py-8">
+      <main className="w-full px-2 md:px-8 py-8">
         <Header year={registerYear} onYearChange={yearChangeHandler} />
         <Outlet context={[currentMonth, currentYear]} />
       </main>

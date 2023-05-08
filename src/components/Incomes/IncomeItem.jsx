@@ -12,7 +12,6 @@ function IncomeItem(props) {
 
   // MODAL SHOW AND HIDE FUNCTIONS
   const showModalHandler = () => setShowDetils(true);
-  const hideModalHandler = () => setShowDetils(false);
 
   return (
     <>
@@ -39,7 +38,7 @@ function IncomeItem(props) {
         </div>
       </li>
       {/** SHOW ADDITIONAL DETAILS MODAL */}
-      {showDetails && <AdditionalDetailsModal income={income} hideModalHandler={hideModalHandler} />}
+      {showDetails && <AdditionalDetailsModal income={income} showModal={showDetails} setShow={setShowDetils} />}
     </>
   );
 }

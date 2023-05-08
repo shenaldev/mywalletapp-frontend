@@ -1,5 +1,4 @@
-import Card from "../UI/Card";
-import Modal from "../UI/Modal";
+import { Modal, ModalContent } from "../UI/Modal";
 import Button from "../UI/Button";
 import Spinner from "../UI/Spinner";
 import Input from "../UI/Forms/Input";
@@ -7,12 +6,12 @@ import FormRow from "../UI/Forms/FormRow";
 import ErrorList from "../UI/Forms/ErrorList";
 import InputError from "../UI/Forms/InputError";
 import FormGroup from "../UI/Forms/FormGroup";
-import ModalHeader from "../Common/ModalHeader";
 //IMPORT LIBS
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { DialogTitle } from "@radix-ui/react-dialog";
 //IMPORT UTILS
 import apiClient, { axiosError, webClient } from "../../util/Axios";
 import { toastifyConfig } from "../../util/Util";
@@ -56,22 +55,23 @@ function EditIncome(props) {
       .put(`/income/${income.id}`, values)
       .then((response) => {
         props.onUpdate(response.data.income, income.value); // UPDATE INCOMES ON INCOMES COMPONENT
-        setIsSubmiting(false);
-        modelHideHandler();
+        props.hideModal();
         toast.success("Income updated successfully", toastifyConfig);
       })
       .catch((error) => {
         console.log("Edit Income UpdateIncomeHandler(): ", error);
         const err = axiosError(error);
         setValidationErrors(err);
+      })
+      .finally(() => {
         setIsSubmiting(false);
       });
   }
 
   return (
-    <Modal>
-      <Card className="max-w-xs max-h-[90vh] md:min-w-[28rem] md:max-w-md overflow-y-auto">
-        <ModalHeader title="Add New Income" closeButtonClick={modelHideHandler} />
+    <Modal open={props.showModal} onOpenChange={props.setShow}>
+      <ModalContent>
+        <DialogTitle>Edit Payment</DialogTitle>
         {/**IF HAS ANY ERROR IN BACKEND VALIDATION **/}
         {validationErrors && <ErrorList errors={validationErrors} />}
         {/** CHECK IS FORM SUBMITING **/}
@@ -139,7 +139,7 @@ function EditIncome(props) {
             <Spinner />
           </div>
         )}
-      </Card>
+      </ModalContent>
     </Modal>
   );
 }

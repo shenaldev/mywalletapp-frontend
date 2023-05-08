@@ -1,6 +1,4 @@
-import ModalHeader from "../Common/ModalHeader";
-import Card from "../UI/Card";
-import Modal from "../UI/Modal";
+import { Modal, ModalContent } from "../UI/Modal";
 import FormRow from "../UI/Forms/FormRow";
 import Input from "../UI/Forms/Input";
 import FormGroup from "../UI/Forms/FormGroup";
@@ -12,6 +10,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { DialogTitle } from "@radix-ui/react-dialog";
 //IMPORT UTILS
 import { toastifyConfig } from "../../util/Util";
 import apiClient, { axiosError, webClient } from "../../util/Axios";
@@ -22,10 +21,6 @@ function EditPayment(props) {
   const categories = props.categories;
   const payment = props.payment;
   const additional_details = payment.additional_details ? payment.additional_details.details : "";
-
-  const modelHideHandler = () => {
-    props.modalHide();
-  };
 
   //FORM VALIATION
   const formik = useFormik({
@@ -58,22 +53,23 @@ function EditPayment(props) {
       .put(`/payment/${payment.id}`, values)
       .then((response) => {
         props.onUpdate(response.data.payment, payment.amount); // UPDATE PAYMENTS ON PAYMENTS COMPONENT
-        setIsSubmiting(false);
-        modelHideHandler();
+        props.hideModal();
         toast.success("Payment Updated Successfully!", toastifyConfig);
       })
       .catch((error) => {
+        console.log("Edit Payment Component: ", error);
         const err = axiosError(error);
         setValidationErrors(err);
+      })
+      .finally(() => {
         setIsSubmiting(false);
-        console.log("Edit Payment Component: ", error);
       });
   }
 
   return (
-    <Modal>
-      <Card className="max-w-xs max-h-[90vh] md:min-w-[28rem] md:max-w-md overflow-y-auto">
-        <ModalHeader title="Edit Payment" closeButtonClick={modelHideHandler} />
+    <Modal open={props.showModal} onOpenChange={props.setShow}>
+      <ModalContent>
+        <DialogTitle className="mb-4 border-b border-b-slate-200 border-spacing-3">Edit Payment</DialogTitle>
         {/**IF HAS ANY ERROR IN BACKEND VALIDATION **/}
         {validationErrors && <ErrorList errors={validationErrors} />}
         {/** CHECK IS FORM SUBMITING **/}
@@ -161,7 +157,7 @@ function EditPayment(props) {
             <Spinner />
           </div>
         )}
-      </Card>
+      </ModalContent>
     </Modal>
   );
 }

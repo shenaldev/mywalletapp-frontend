@@ -1,5 +1,4 @@
-import Modal from "../../components/UI/Modal";
-import Card from "../../components/UI/Card";
+import { Modal, ModalContent } from "../../components/UI/Modal";
 import Button from "../../components/UI/Button";
 import FormRow from "../../components/UI/Forms/FormRow";
 import FormGroup from "../../components/UI/Forms/FormGroup";
@@ -7,12 +6,12 @@ import Input from "../../components/UI/Forms/Input";
 import Spinner from "../../components/UI/Spinner";
 import InputError from "../UI/Forms/InputError";
 import ErrorList from "../UI/Forms/ErrorList";
-import ModalHeader from "../Common/ModalHeader";
 //IMPORT LIBS
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { DialogTitle } from "@radix-ui/react-dialog";
 //IMPORT UTILS
 import apiClient, { axiosError, webClient } from "../../util/Axios";
 import { toastifyConfig } from "../../util/Util";
@@ -21,9 +20,6 @@ function AddPayment(props) {
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [validationErrors, setValidationErrors] = useState(false);
   const categories = props.categories;
-  const modelHideHandler = () => {
-    props.modalHide();
-  };
 
   //FORM VALIATION
   const formik = useFormik({
@@ -54,23 +50,25 @@ function AddPayment(props) {
       .then((response) => {
         if (response.status == 200) {
           props.onAdd(response.data.payment); // UPDATE PAYMENTS ON PAYMENTS COMPONENT
-          setIsSubmiting(false);
+          props.hideModal();
           formik.resetForm();
-          modelHideHandler();
           toast.success("Payment Saved Successfully!", toastifyConfig);
         }
       })
       .catch((error) => {
+        console.log("Error Add Payment Handler: ", error);
         const err = axiosError(error);
         setValidationErrors(err);
+      })
+      .finally(() => {
         setIsSubmiting(false);
       });
   }
 
   return (
-    <Modal>
-      <Card className="max-w-xs max-h-[90vh] md:min-w-[28rem] md:max-w-md overflow-y-auto">
-        <ModalHeader title="Add New Payment" closeButtonClick={modelHideHandler} />
+    <Modal open={props.showModal} onOpenChange={props.setShow}>
+      <ModalContent>
+        <DialogTitle className="mb-4 border-b border-b-slate-200 border-spacing-3">Add New Payment</DialogTitle>
         {/**IF HAS ANY ERROR IN BACKEND VALIDATION **/}
         {validationErrors && <ErrorList errors={validationErrors} />}
         {/** CHECK IS FORM SUBMITING **/}
@@ -158,7 +156,7 @@ function AddPayment(props) {
             <Spinner />
           </div>
         )}
-      </Card>
+      </ModalContent>
     </Modal>
   );
 }

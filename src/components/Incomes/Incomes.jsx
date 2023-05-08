@@ -8,10 +8,10 @@ import AddIncome from "./AddIncome";
 import IncomeItem from "./IncomeItem";
 import Spinner from "../UI/Spinner";
 import SumOfTotal from "../Common/SumOfTotal";
+import EditIncome from "./EditIncome";
 //IMPORT UTILS
 import apiClient from "../../util/Axios";
 import { toastifyConfig } from "../../util/Util";
-import EditIncome from "./EditIncome";
 
 function Incomes(props) {
   const currentYear = props.year;
@@ -154,9 +154,19 @@ function Incomes(props) {
         {!isFetching && <SumOfTotal sum={sum} className="text-green-600 border-b-slate-600" />}
       </Card>
       {/** SHOW ADD INCOME MODAL ON ADD BUTTON CLICK */}
-      {showModal && <AddIncome modalHide={hideModalHandler} onAdd={newIncomeHandler} />}
+      {showModal && (
+        <AddIncome onAdd={newIncomeHandler} showModal={showModal} hideModal={hideModalHandler} setShow={setShowModal} />
+      )}
       {/** SHOW EDIT INCOME MODAL */}
-      {showEditModal && <EditIncome income={editIncome} onUpdate={onIncomeUpdate} modalHide={hideEditModalHandler} />}
+      {showEditModal && (
+        <EditIncome
+          income={editIncome}
+          onUpdate={onIncomeUpdate}
+          showModal={showEditModal}
+          hideModal={hideEditModalHandler}
+          setShow={setShowEditModal}
+        />
+      )}
     </>
   );
 }

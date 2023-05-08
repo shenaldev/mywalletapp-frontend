@@ -13,8 +13,6 @@ function PaymentItem(props) {
 
   // MODAL SHOW AND HIDE FUNCTIONS
   const showModalHandler = () => setShowDetils(true);
-  const hideModalHandler = () => setShowDetils(false);
-
   return (
     <>
       <li
@@ -40,7 +38,7 @@ function PaymentItem(props) {
         </div>
       </li>
       {/** SHOW ADDITIONAL DETAILS MODAL */}
-      {showDetails && <AdditionalDetailModal payment={payment} hideModalHandler={hideModalHandler} />}
+      {showDetails && <AdditionalDetailModal payment={payment} showModal={showDetails} setShow={setShowDetils} />}
     </>
   );
 }

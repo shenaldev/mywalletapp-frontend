@@ -1,6 +1,5 @@
-import ModalHeader from "../Common/ModalHeader";
-import Card from "../UI/Card";
-import Modal from "../UI/Modal";
+import { Modal, ModalContent } from "../UI/Modal";
+import { DialogTitle } from "@radix-ui/react-dialog";
 //IMPORT UTILS
 import { numberFormat } from "../../util/Util";
 
@@ -8,9 +7,9 @@ function AdditionalDetailsModal(props) {
   const income = props.income;
 
   return (
-    <Modal>
-      <Card className="max-w-xs max-h-[90vh] md:min-w-[28rem] md:max-w-md overflow-y-auto">
-        <ModalHeader title="Income Details" closeButtonClick={props.hideModalHandler} />
+    <Modal open={props.showModal} onOpenChange={props.setShow}>
+      <ModalContent>
+        <DialogTitle className="mb-4 border-b border-b-slate-200 border-spacing-3">Income Details</DialogTitle>
         <div className="mt-6 text-slate-900">
           <table className="w-full">
             <tbody>
@@ -33,7 +32,7 @@ function AdditionalDetailsModal(props) {
           </table>
           <p className="mt-3">Additional Details : {income.additional_details.details}</p>
         </div>
-      </Card>
+      </ModalContent>
     </Modal>
   );
 }
