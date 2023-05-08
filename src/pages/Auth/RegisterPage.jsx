@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-//Import Pages And Components
+//IMPORT COMPONENTS
 import RegisterForm from "../../components/Auth/RegisterForm";
 import AuthLayout from "../../components/UI/AuthLayout";
+//IMPORT UTILS
 import { setLogin } from "../../util/Auth";
-
-//Import Helpers
 import apiClient, { axiosError, webClient } from "../../util/Axios";
 
 function RegisterPage() {
@@ -14,7 +12,7 @@ function RegisterPage() {
   const [isSubmiting, setIsSubmiting] = useState(false);
   const navigate = useNavigate();
 
-  //Handle Registration
+  //HANDLE REGISTRATION
   const registerHandler = (values) => {
     webClient.get("/sanctum/csrf-cookie");
     setIsSubmiting(true);
@@ -27,14 +25,15 @@ function RegisterPage() {
         password_confirmation: values.passwordConf,
       })
       .then((response) => {
-        setIsSubmiting(false);
         setLogin(); // SET LOCALSTORAGE VALUES
         navigate("/", { replace: true });
       })
       .catch((errors) => {
-        setIsSubmiting(false);
         const err = axiosError(errors);
         setErrors(err);
+      })
+      .finally(() => {
+        setIsSubmiting(false);
       });
   };
 
