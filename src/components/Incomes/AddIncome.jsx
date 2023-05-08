@@ -4,12 +4,11 @@ import Spinner from "../UI/Spinner";
 import Input from "../UI/Forms/Input";
 import FormRow from "../UI/Forms/FormRow";
 import ErrorList from "../UI/Forms/ErrorList";
-import InputError from "../UI/Forms/InputError";
 import FormGroup from "../UI/Forms/FormGroup";
 //IMPORT LIBS
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useFormik } from "formik";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { DialogTitle } from "@radix-ui/react-dialog";
 //IMPORT UTILS
@@ -19,25 +18,18 @@ import { toastifyConfig } from "../../util/Util";
 function AddIncome(props) {
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [validationErrors, setValidationErrors] = useState(false);
-  //Modal Hide Handler
-  const modelHideHandler = () => props.modalHide();
 
   //FORM VALIATION
-  const formik = useFormik({
-    initialValues: {
-      from: "",
-      value: "",
-      date: "",
-    },
-    validationSchema: Yup.object({
-      from: Yup.string().required().min(3).max(200).label("From"),
-      value: Yup.number().required().label("Amount"),
-      date: Yup.date().required().label("Date"),
-    }),
-    onSubmit: (values) => {
-      setIsSubmiting(true);
-      addIncomeHandler(values);
-    },
+  const formikInit = {
+    from: "",
+    value: "",
+    date: "",
+  };
+
+  const validationRules = Yup.object({
+    from: Yup.string().required().min(3).max(200).label("From"),
+    value: Yup.number().required().label("Amount"),
+    date: Yup.date().required().label("Date"),
   });
 
   //SAVE DATA IN THE DATABASE
@@ -49,7 +41,6 @@ function AddIncome(props) {
       .then((response) => {
         if (response.status == 200) {
           props.onAdd(response.data.income); // UPDATE INCOMES STATE ON ADD
-          formik.resetForm();
           props.hideModal();
           toast.success("Income Saved Successfully!", toastifyConfig);
         }
@@ -72,60 +63,39 @@ function AddIncome(props) {
         {validationErrors && <ErrorList errors={validationErrors} />}
         {/** CHECK IS FORM SUBMITING **/}
         {!isSubmiting && (
-          <form className="mt-4" onSubmit={formik.handleSubmit}>
-            <FormRow>
-              <Input
-                labelName="From"
-                id="from"
-                name="from"
-                placeholder="Salaries"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.from}
-              />
-              {formik.touched.from && formik.errors.from && <InputError message={formik.errors.from} />}
-            </FormRow>
-            <FormGroup>
+          <Formik
+            initialValues={formikInit}
+            validationSchema={validationRules}
+            onSubmit={(values) => {
+              setIsSubmiting(true);
+              addIncomeHandler(values);
+            }}
+          >
+            <Form className="mt-4">
+              <FormRow>
+                <Input name={"from"} labelName="From" id="from" placeholder="Salaries" />
+              </FormRow>
+              <FormGroup>
+                <FormRow>
+                  <Input name={"value"} labelName="Amount" id="value" type="number" placeholder="100.99" />
+                </FormRow>
+                <FormRow>
+                  <Input name={"date"} labelName="Date" id="date" type="date" />
+                </FormRow>
+              </FormGroup>
               <FormRow>
                 <Input
-                  labelName="Amount"
-                  id="value"
-                  name="value"
-                  type="number"
-                  placeholder="100.99"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.value}
+                  name={"additional_details"}
+                  labelName="Additional Details (optional)"
+                  id="additional_details"
+                  required={false}
                 />
-                {formik.touched.value && formik.errors.value && <InputError message={formik.errors.value} />}
               </FormRow>
               <FormRow>
-                <Input
-                  labelName="Date"
-                  id="date"
-                  name="date"
-                  type="date"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.date}
-                />
-                {formik.touched.date && formik.errors.date && <InputError message={formik.errors.date} />}
+                <Button type="submit">Save</Button>
               </FormRow>
-            </FormGroup>
-            <FormRow>
-              <Input
-                labelName="Additional Details (optional)"
-                id="additional_details"
-                name="additional_details"
-                required={false}
-                onChange={formik.handleChange}
-                value={formik.values.additional_details}
-              />
-            </FormRow>
-            <FormRow>
-              <Button type="submit">Save</Button>
-            </FormRow>
-          </form>
+            </Form>
+          </Formik>
         )}
         {/** END OF ISSUBMITING CHECK **/}
         {/** IF IS FORM SUBMITING SHOW LOADING */}
