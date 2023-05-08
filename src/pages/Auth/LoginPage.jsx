@@ -56,14 +56,18 @@ function LoginPage() {
         password: password,
       })
       .then((response) => {
-        setIsSubmiting(false);
         setLogin();
         navigate("/", { replace: true });
       })
       .catch((errors) => {
-        console.log(errors.response.data);
-        const err = axiosError(errors);
-        setErrors(err);
+        if (errors.response.status === 401) {
+          setErrors({ message: errors.response.data.message });
+        } else {
+          const err = axiosError(errors);
+          setErrors(err);
+        }
+      })
+      .finally(() => {
         setIsSubmiting(false);
       });
   };
