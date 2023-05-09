@@ -48,7 +48,7 @@ function EditPayment(props) {
     apiClient
       .put(`/payment/${payment.id}`, values)
       .then((response) => {
-        props.onUpdate(response.data.payment, payment.amount); // UPDATE PAYMENTS ON PAYMENTS COMPONENT
+        props.onUpdate(response.data.payment, payment); // UPDATE PAYMENTS ON PAYMENTS COMPONENT
         props.hideModal();
         toast.success("Payment Updated Successfully!", toastifyConfig);
       })

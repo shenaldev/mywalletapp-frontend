@@ -12,7 +12,15 @@ import EditPayment from "./EditPayment";
 //IMPORT UTILS
 import apiClient, { webClient } from "../../util/Axios";
 import { toastifyConfig } from "../../util/Util";
-import { getCategoryID, getCategorySlug } from "../../util/Payments";
+import {
+  getCategoryID,
+  getCategorySlug,
+  getNewPayments,
+  getNewPaymentsOnUpdate,
+  getNewTotals,
+  getNewTotalsOnDelete,
+  getNewTotalsOnUpdate,
+} from "../../util/Payments";
 
 function Payments(props) {
   const currentYear = props.year;
@@ -76,35 +84,18 @@ function Payments(props) {
     if (paymentDate.getMonth() != currentMonth || paymentDate.getFullYear() != currentYear) {
       return;
     }
-
-    //Get category of newly added payment
+    //GET CATEGORY SLUG OF NEWLY ADDED PAYMENT
     const categorySlug = getCategorySlug(categories, payment.category_id);
 
     //UPDATE PAYMENTS OBJECT
     setPayments((payments) => {
-      if (payments[categorySlug]) {
-        return { ...payments, [categorySlug]: [...payments[categorySlug], payment] };
-      }
-      const newPayments = { ...payments, [categorySlug]: [payment] };
+      const newPayments = getNewPayments(payments, payment, categorySlug);
       return newPayments;
     });
 
     //UPDATE TOTALS VALUE ON ADD NEW PAYMENT
     setTotals((prevState) => {
-      //CHECK IS TOTAL CATEGORY IS IN TOTALS ARRAY IF NOT ADD IT ELSE UPDATE
-      const isCategoryInTotals = totals.some((t) => t.slug == categorySlug);
-      let newTotals = null;
-      if (isCategoryInTotals) {
-        newTotals = prevState.map((total) => {
-          if (total.slug == categorySlug) {
-            const ntotal = (parseFloat(total.total) + parseFloat(payment.amount)).toFixed(2);
-            return { ...total, total: ntotal.toString() };
-          }
-          return total;
-        });
-      } else {
-        newTotals = [...prevState, { category_id: payment.category_id, slug: categorySlug, total: payment.amount }];
-      }
+      const newTotals = getNewTotals(prevState, payment, categorySlug);
       return newTotals;
     });
 
@@ -133,15 +124,9 @@ function Payments(props) {
         }),
       };
     });
-    //UPDATE TOTALS VALUE ON DELETE
+    // UPDATE TOTALS OBJECT
     setTotals((prevState) => {
-      const newTotals = prevState.map((total) => {
-        if (total.category_id == categoryID) {
-          const newTotal = (parseFloat(total.total) - parseFloat(payment.amount)).toFixed(2);
-          return { ...total, total: newTotal.toString() };
-        }
-        return total;
-      });
+      const newTotals = getNewTotalsOnDelete(prevState, categoryID, payment.amount);
       return newTotals;
     });
     //UPDATE SUM OF TOTALS
@@ -185,40 +170,25 @@ function Payments(props) {
    * @param {*} payment Updated Payment Object
    * @param {*} oldCost Old Payment Cost
    */
-  function onPaymentUpdate(payment, oldCost) {
-    const categorySlug = getCategorySlug(categories, payment.category_id);
-    const categoryID = getCategoryID(categories, payment.category_id);
+  function onPaymentUpdate(updatedPayment, oldPayment) {
+    const categorySlug = getCategorySlug(categories, updatedPayment.category_id);
 
     //UPDATE PAYMENTS OBJECT
-    setPayments((payments) => {
-      return {
-        ...payments,
-        [categorySlug]: payments[categorySlug].map((item) => {
-          if (item.id == payment.id) {
-            return payment;
-          }
-          return item;
-        }),
-      };
+    setPayments((prevState) => {
+      const newPayments = getNewPaymentsOnUpdate(prevState, updatedPayment, oldPayment, categories, categorySlug);
+      return newPayments;
     });
 
     //UPDATE TOTALS VALUE ON UPDATE
     setTotals((prevState) => {
-      const newTotals = prevState.map((total) => {
-        if (total.category_id == categoryID) {
-          const calTotal = parseFloat(total.total) - parseFloat(oldCost);
-          const newTotal = parseFloat(calTotal) + parseFloat(payment.amount);
-          return { ...total, total: newTotal.toString() };
-        }
-        return total;
-      });
+      const newTotals = getNewTotalsOnUpdate(prevState, updatedPayment, oldPayment, categories, categorySlug);
       return newTotals;
     });
 
     //UPDATE SUM OF TOTALS
     setSum((prevState) => {
-      const calSum = parseFloat(prevState) - parseFloat(oldCost);
-      const newSum = parseFloat(calSum) + parseFloat(payment.amount);
+      const calSum = parseFloat(prevState) - parseFloat(oldPayment.amount);
+      const newSum = parseFloat(calSum) + parseFloat(updatedPayment.amount);
       return newSum;
     });
   }
