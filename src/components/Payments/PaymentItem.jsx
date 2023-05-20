@@ -17,11 +17,11 @@ function PaymentItem(props) {
     <>
       <li
         key={payment.id}
-        className="flex justify-between border-b border-b-slate-200 border-spacing-1 mb-2 relative transaction-list"
+        className="grid grid-cols-[1fr_3fr_1fr] border-b border-b-slate-200 border-spacing-1 mb-2 relative transaction-list"
       >
         <span>{formatMonthDay(payment.date)}</span>
         <span className="capitalize">{payment.payment_for}</span>
-        <span>{numberFormat(payment.amount)}</span>
+        <span className="justify-self-end">{numberFormat(payment.amount)}</span>
         <div className="absolute top-0 right-0 action-icons">
           {/** SHOW ADDIDTIONAL DETAILS BUTTON IF HAVE ADDITIONAL DETAILS */}
           {payment.additional_details && (

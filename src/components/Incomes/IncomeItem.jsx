@@ -17,7 +17,7 @@ function IncomeItem(props) {
     <>
       <li
         key={income.id}
-        className="flex justify-between border-b border-b-slate-200 border-spacing-2 mb-2 relative transaction-list"
+        className="grid grid-cols-[1fr_3fr_1fr] border-b border-b-slate-200 border-spacing-2 mb-2 relative transaction-list"
       >
         <span>{formatMonthDay(income.date)}</span>
         <span className="capitalize">{income.from}</span>

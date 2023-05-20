@@ -10,5 +10,7 @@ export function getMonth() {
 
 export function formatMonthDay(date) {
   const d = new Date(date);
-  return d.toLocaleDateString("en-US", { day: "2-digit", month: "2-digit" });
+  const formatedDate = d.toLocaleDateString("en-US", { day: "2-digit", month: "2-digit" });
+  const replacedDate = formatedDate.replace("/", "-");
+  return replacedDate;
 }
