@@ -11,9 +11,11 @@ $primary-color: #4b56d2;
   top: 0;
   left: 0;
   z-index: 100;
+  animation: sidebarShow 300ms ease-in;
   @media (min-width: 768px) {
     min-width: 12rem;
     max-width: 12rem;
+    animation: sidebarShow 300ms ease-in;
   }
   @media (min-width: 1024px) {
     position: relative;
@@ -29,6 +31,15 @@ $primary-color: #4b56d2;
     height: 2rem;
     border-radius: 0 50% 50% 0;
     z-index: 50;
+  }
+}
+
+@keyframes sidebarShow {
+  from {
+    left: -300px;
+  }
+  to {
+    left: 0;
   }
 }
 

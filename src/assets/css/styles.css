@@ -9,11 +9,13 @@
   top: 0;
   left: 0;
   z-index: 100;
+  animation: sidebarShow 300ms ease-in;
 }
 @media (min-width: 768px) {
   .sidebar {
     min-width: 12rem;
     max-width: 12rem;
+    animation: sidebarShow 300ms ease-in;
   }
 }
 @media (min-width: 1024px) {
@@ -34,6 +36,14 @@
   z-index: 50;
 }
 
+@keyframes sidebarShow {
+  from {
+    left: -300px;
+  }
+  to {
+    left: 0;
+  }
+}
 /**
 * HAMBURGER MENU STYLES WITH CLOSE ANIMATION
 ***/

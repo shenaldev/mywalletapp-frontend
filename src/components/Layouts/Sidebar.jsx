@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
 import HamburgerButton from "../UI/HamburgerButton";
@@ -21,6 +21,8 @@ const months = [
 function Sidebar(props) {
   const [navShown, setNavShown] = useState(false);
   const currentMonth = props.month;
+  const sidebarRef = useRef();
+
   const monthClickHandler = (month) => {
     props.onMonthChange(month);
   };
@@ -29,13 +31,33 @@ function Sidebar(props) {
     setNavShown((value) => (value = !value));
   }
 
+  //HANDLE OUTSIDE CLICK
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      console.log("click");
+      document.addEventListener("mousedown", outsideClickHandler);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", outsideClickHandler);
+    };
+  }, [sidebarRef]);
+
+  function outsideClickHandler(e) {
+    if (window.innerWidth < 1024) {
+      if (!sidebarRef.current.contains(e.target)) {
+        setNavShown(false);
+      }
+    }
+  }
+
   return (
     <>
       {/***** HAMBURGER BUTTON FOR MOBILE VIEWS *****/}
       <div className="absolute top-10 left-6">
         <HamburgerButton onClick={sidebarShowHandler} />
       </div>
-      <div className={`sidebar md:py-8 bg-primaryColor text-white lg:block ${navShown ? "block" : "hidden"}`}>
+      <div className={`sidebar md:py-8 bg-primaryColor text-white lg:block ${navShown ? "block" : "hidden"}`} ref={sidebarRef}>
         {/***** CLOSE BUTTON FOR MOBILE VIEWS *****/}
         <button onClick={sidebarShowHandler} className="sidebar-close flex items-center justify-center lg:hidden">
           <AiOutlineClose color="white" size="1.3rem" />
