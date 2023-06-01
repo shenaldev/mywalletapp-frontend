@@ -1,18 +1,12 @@
 import { useState } from "react";
-import { BiUserCircle } from "react-icons/bi";
-import { Link } from "react-router-dom";
 //IMPORT UTIlS
 import { getYear } from "../../util/Dates";
+//IMPORT COMPONENTS
+import ProfileDropDown from "./ProfileDropdown";
 
 function Header(props) {
   const currentYear = getYear();
-  const [avatarClick, setAvatarClick] = useState(false);
   const [selectedYear, setSelectedYear] = useState(currentYear);
-
-  //SHOW DROPDOWN MENU ON AVATAR CLICK
-  function avatarClickHandler() {
-    setAvatarClick((state) => (state = !state));
-  }
 
   /**
    * @param {*} start user registered year
@@ -51,21 +45,7 @@ function Header(props) {
         </select>
       </div>
       <h4 className="hidden md:block text-lg text-slate-700 font-medium">This Month Transactions</h4>
-      <div className="relative">
-        <BiUserCircle size="2rem" color="#4B56D2" className="cursor-pointer" onClick={avatarClickHandler} />
-        <div
-          className={`${
-            avatarClick ? "flex" : "hidden"
-          } absolute flex-col gap-2 bg-white shadow px-4 py-6 rounded-sm w-36 right-0 font-medium`}
-        >
-          <Link to="#" className="hover:text-primaryColor">
-            Profile
-          </Link>
-          <Link to="/logout" className="hover:text-primaryColor">
-            Logout
-          </Link>
-        </div>
-      </div>
+      <ProfileDropDown />
     </header>
   );
 }
