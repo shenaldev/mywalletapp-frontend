@@ -30,7 +30,7 @@ function AdditionalDetailModal(props) {
               </tr>
             </tbody>
           </table>
-          <p className="mt-3">Additional Details : {payment.additional_details.details}</p>
+          {payment.additional_details && <p className="mt-3">Additional Details : {payment.additional_details.details}</p>}
         </div>
       </ModalContent>
     </Modal>
