@@ -195,7 +195,7 @@ function Payments(props) {
 
   return (
     <>
-      <Card>
+      <Card className={props.className ? props.className : "hidden md:block"}>
         <CardHeader title="Payments" addButtonClick={showAddModalHanlder} />
         {/** SHOW FETCHING SPINNER */}
         {isFetching && <div className="flex items-center justify-center">{isFetching && <Spinner />}</div>}

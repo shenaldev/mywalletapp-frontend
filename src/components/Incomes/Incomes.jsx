@@ -139,7 +139,7 @@ function Incomes(props) {
 
   return (
     <>
-      <Card>
+      <Card className={props.className ? props.className : "hidden md:block"}>
         <CardHeader title="Incomes" addButtonClick={showAddModalHanlder} />
         {isFetching && <div className="flex items-center justify-center">{isFetching && <Spinner />}</div>}
         {!isFetching && (
