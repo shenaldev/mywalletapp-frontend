@@ -1,4 +1,13 @@
-function Button(props) {
+type ButtonProps = {
+  type?: HTMLButtonElement["type"];
+  colors?: string;
+  className?: string;
+  disabled?: boolean;
+  onClick?: () => void;
+  children: React.ReactNode;
+};
+
+function Button(props: ButtonProps) {
   return (
     <button
       type={props.type ? props.type : "button"}

@@ -10,13 +10,18 @@ import RegisterPage from "./pages/Auth/RegisterPage";
 import LogoutPage from "./pages/Auth/LogoutPage";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./pages/ErrorBoundary";
+import ReportsPage from "./pages/ReportsPage";
+import { useEffect } from "react";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
     errorElement: <ErrorBoundary />,
-    children: [{ index: true, element: <HomePage /> }],
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: "reports", element: <ReportsPage /> },
+    ],
   },
   { path: "/logout", element: <LogoutPage /> },
   { path: "/error", element: <ErrorBoundary /> },
@@ -33,6 +38,14 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  //CHECK FOR DARKMODE
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    if (theme == "dark") {
+      document.getElementById("root")?.classList.add("dark");
+    }
+  }, []);
+
   return <RouterProvider router={router} />;
 }
 

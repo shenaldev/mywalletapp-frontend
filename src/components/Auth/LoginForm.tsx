@@ -1,5 +1,5 @@
-import FormRow from "../../components/UI/Forms/FormRow";
-import Input from "../../components/UI/Forms/Input";
+import FormRow from "../UI/Forms/FormRow";
+import Input from "../UI/Forms/Input";
 import Button from "../UI/Button";
 import ErrorList from "../UI/Forms/ErrorList";
 //IMPORT LIBS
@@ -7,7 +7,13 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 
-function LoginForm(props) {
+type LoginFormProps = {
+  onLogin: (email: string, password: string) => void;
+  errors: any;
+  isSubmiting: boolean;
+};
+
+function LoginForm(props: LoginFormProps) {
   const formikInit = {
     email: "",
     password: "",

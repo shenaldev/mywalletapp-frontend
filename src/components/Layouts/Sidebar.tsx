@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
 import HamburgerButton from "../UI/HamburgerButton";
+import { Link, useLocation } from "react-router-dom";
 
 const months = [
   { id: 0, name: "January", short: "Jan" },
@@ -20,8 +21,10 @@ const months = [
 
 function Sidebar(props) {
   const [navShown, setNavShown] = useState(false);
-  const currentMonth = props.month;
+  const [isReportSelected, setIsReportSelected] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(props.month);
   const sidebarRef = useRef();
+  const location = useLocation();
 
   const monthClickHandler = (month) => {
     props.onMonthChange(month);
@@ -43,6 +46,16 @@ function Sidebar(props) {
     };
   }, [sidebarRef]);
 
+  //CHECK IS REPORT PAGE
+  useEffect(() => {
+    if (location.pathname === "/reports") {
+      setIsReportSelected(true);
+      setCurrentMonth(null);
+    } else {
+      setIsReportSelected(false);
+    }
+  }, []);
+
   function outsideClickHandler(e) {
     if (window.innerWidth < 1024) {
       if (!sidebarRef.current.contains(e.target)) {
@@ -57,7 +70,10 @@ function Sidebar(props) {
       <div className="absolute top-10 left-6">
         <HamburgerButton onClick={sidebarShowHandler} />
       </div>
-      <div className={`sidebar md:py-8 bg-primaryColor text-white lg:block ${navShown ? "block" : "hidden"}`} ref={sidebarRef}>
+      <div
+        className={`sidebar md:py-8 bg-primaryColor text-white lg:block ${navShown ? "block" : "hidden"}`}
+        ref={sidebarRef}
+      >
         {/***** CLOSE BUTTON FOR MOBILE VIEWS *****/}
         <button onClick={sidebarShowHandler} className="sidebar-close flex items-center justify-center lg:hidden">
           <AiOutlineClose color="white" size="1.3rem" />
@@ -72,13 +88,23 @@ function Sidebar(props) {
                 <li
                   key={month.id}
                   className={`mb-4 ${
-                    currentMonth == month.id ? "bg-bodyBackground text-slate-900 px-4 font-medium py-1 rounded-l-md" : undefined
+                    currentMonth == month.id
+                      ? "bg-bodyBackground text-slate-900 px-4 font-medium py-1 rounded-l-md"
+                      : undefined
                   }`}
                 >
                   <button onClick={monthClickHandler.bind(this, month.id)}>{month.name}</button>
                 </li>
               );
             })}
+            {/***** GENERATE YEARLY REPORT *****/}
+            <li
+              className={`mb-4 ${
+                isReportSelected ? "bg-bodyBackground text-slate-900 px-4 font-medium py-1 rounded-l-md" : ""
+              }`}
+            >
+              <Link to="/reports">Report</Link>
+            </li>
           </ul>
         </nav>
       </div>

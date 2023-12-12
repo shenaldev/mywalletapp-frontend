@@ -1,7 +1,17 @@
 import { useField } from "formik";
 import InputError from "./InputError";
 
-function Input(props) {
+type InputProps = {
+  name: string;
+  id: string;
+  labelName: string;
+  placeholder?: string;
+  type?: string;
+  className?: string;
+  attributes?: any;
+};
+
+function Input(props: InputProps) {
   const [field, meta] = useField(props.name);
   return (
     <>
